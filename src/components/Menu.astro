@@ -22,7 +22,7 @@ const categoryIds = new Map([...grouped.keys()].map((category, index) => [
 const available = sections
   .map((section) => ({ ...section, categories: section.categories.filter((category) => grouped.has(category)) }))
   .filter((section) => section.categories.length);
-const peso = (n: number) => `₱${n.toLocaleString('en-PH')}`;
+const formatPrice = new Intl.NumberFormat('en-PH');
 const shortNames: Record<string, string> = { meals: 'Meals', sweets: 'Sweets' };
 function sharedOptions(rows: MenuItem[]) {
   const labels = rows[0].options?.map(([label]) => label);
@@ -84,7 +84,7 @@ function sharedOptions(rows: MenuItem[]) {
                           {item.soldOut && <span class="ml-2 text-xs text-cocoa">Sold out</span>}
                           {item.description && <span class="block text-xs font-normal text-cocoa">{item.description}</span>}
                         </th>
-                        {item.options?.map(([, price]) => <td class="py-2 pl-2 text-right text-sm font-bold tabular-nums text-forest last:pr-3 lg:last:pr-0">{peso(price)}</td>)}
+                        {item.options?.map(([, price]) => <td class="py-2 pl-2 text-right text-sm font-bold tabular-nums text-forest last:pr-3 lg:last:pr-0"><span class="peso-symbol">₱</span>{formatPrice.format(price)}</td>)}
                       </tr>
                     ))}
                   </tbody>
@@ -95,14 +95,14 @@ function sharedOptions(rows: MenuItem[]) {
                   <li class="py-2.5 lg:py-2">
                     <div class="flex items-baseline justify-between gap-3">
                       <span class="font-bold text-forest lg:text-sm lg:font-semibold lg:text-bean">{item.name}{item.soldOut && <span class="ml-2 text-xs font-semibold text-cocoa">Sold out</span>}</span>
-                      {!item.options && item.price !== null && <span class="shrink-0 font-bold tabular-nums text-forest">{peso(item.price)}</span>}
+                      {!item.options && item.price !== null && <span class="shrink-0 font-bold tabular-nums text-forest"><span class="peso-symbol">₱</span>{formatPrice.format(item.price)}</span>}
                     </div>
                     {item.description && <p class="mt-1 text-sm text-cocoa">{item.description}</p>}
                     {item.options && (
                       <dl class="mt-2 flex flex-wrap gap-x-2 gap-y-1.5 text-xs sm:text-sm">
                         {item.options.map(([label, price]) => (
                           <div class="flex items-baseline gap-1.5 rounded-md bg-foam px-2 py-1 text-cocoa">
-                            <dt>{label}</dt><dd class="font-bold tabular-nums text-forest">{peso(price)}</dd>
+                            <dt>{label}</dt><dd class="font-bold tabular-nums text-forest"><span class="peso-symbol">₱</span>{formatPrice.format(price)}</dd>
                           </div>
                         ))}
                       </dl>
@@ -120,6 +120,12 @@ function sharedOptions(rows: MenuItem[]) {
   </div>
   </div>
 </section>
+
+<style>
+  .peso-symbol {
+    font-family: system-ui, sans-serif;
+  }
+</style>
 
 <script>
   const menu = document.getElementById('menu');
