@@ -48,11 +48,31 @@ const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
       )}
     </div>
 
-    <iframe title={`Map of ${cafe.name}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-      src={mapUrl} class="block aspect-[4/3] w-full rounded-2xl border-0 bg-sage lg:col-start-1 lg:row-start-1"></iframe>
+    <details data-visit-map class="self-start rounded-2xl border border-foam/40 lg:col-start-1 lg:row-start-1">
+      <summary class="min-h-11 cursor-pointer rounded-2xl px-4 py-3 font-semibold">Show interactive map</summary>
+      <template>
+        <iframe title={`Map of ${cafe.name}`} referrerpolicy="no-referrer-when-downgrade"
+          src={mapUrl} class="block aspect-[4/3] w-full rounded-b-2xl border-0 bg-sage"></iframe>
+      </template>
+    </details>
   </div>
   <p class="border-t border-white/10 px-5 py-5 text-center text-sm text-foam/60">
     © {new Date().getFullYear()} {cafe.name}
   </p>
 </footer>
+
+<script>
+  const map = document.querySelector<HTMLDetailsElement>('[data-visit-map]');
+  const template = map?.querySelector('template');
+  if (map && template) {
+    function loadMap() {
+      if (!map?.open || !template) return;
+      template.replaceWith(template.content);
+      map.removeEventListener('toggle', loadMap);
+    }
+
+    map.addEventListener('toggle', loadMap);
+    loadMap();
+  }
+</script>
 

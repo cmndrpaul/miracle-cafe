@@ -16,6 +16,7 @@ function serveSectionAliases(server) {
 // Fully static output: deploys to Vercel Hobby with zero config.
 export default defineConfig({
   site: productionDomain ? `https://${productionDomain}` : undefined,
+  build: { inlineStylesheets: 'always' },
   vite: {
     plugins: [
       tailwindcss(),
