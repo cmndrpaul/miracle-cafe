@@ -5,7 +5,7 @@ import StatusBadge from './StatusBadge.astro';
 ---
 <header class="hero-surface relative bg-forest text-foam">
   <nav aria-label="Main navigation" class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-3 border-b border-foam/20 px-4 py-2 sm:px-8 lg:border-0 lg:py-5 lg:pr-72">
-    <a href="#" class="inline-flex min-h-11 items-center gap-2.5 font-display text-lg font-bold lg:text-xl">
+    <a href="/" class="inline-flex min-h-11 items-center gap-2.5 font-display text-lg font-bold lg:text-xl">
       {cafe.heroImage ? (
         <span class="grid size-12 place-items-center rounded-full bg-foam p-1.5 lg:hidden">
           <img src={cafe.heroImage} width="900" height="755" alt="" />
@@ -14,9 +14,9 @@ import StatusBadge from './StatusBadge.astro';
       {cafe.name}
     </a>
     <div class="flex gap-4 text-sm font-semibold sm:gap-7">
-      <a href="#menu" class="inline-flex min-h-11 items-center hover:text-butter">Menu</a>
-      <a href="#reviews" class="hidden min-h-11 items-center hover:text-butter lg:inline-flex">Reviews</a>
-      <a href="#visit" class="inline-flex min-h-11 items-center hover:text-butter">Visit</a>
+      <a href="/menu" data-section-link class="inline-flex min-h-11 items-center hover:text-butter">Menu</a>
+      <a href="/reviews" data-section-link class="inline-flex min-h-11 items-center hover:text-butter">Reviews</a>
+      <a href="/visit" data-section-link class="inline-flex min-h-11 items-center hover:text-butter">Visit</a>
     </div>
   </nav>
 
@@ -26,7 +26,7 @@ import StatusBadge from './StatusBadge.astro';
       <h1 class="mt-3 max-w-[16ch] font-display text-[clamp(2.35rem,10vw,4.25rem)] font-semibold leading-none tracking-tight lg:mt-0 lg:max-w-[10ch] lg:text-[clamp(4.4rem,6.3vw,6rem)] lg:leading-[1.02]">{cafe.motto}</h1>
       <p class="mt-3 max-w-sm text-sm leading-relaxed text-foam/85 lg:mt-5 lg:max-w-md lg:text-lg">{cafe.tagline}</p>
       <div class="mt-4 grid grid-cols-[1.25fr_1fr] gap-2.5 sm:max-w-sm lg:mt-6 lg:flex lg:max-w-none lg:flex-wrap lg:gap-3">
-        <a href="#menu" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-butter px-3 py-3 font-bold text-bean hover:bg-foam lg:px-6 lg:py-3.5">
+        <a href="/menu" data-section-link class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-butter px-3 py-3 font-bold text-bean hover:bg-foam lg:px-6 lg:py-3.5">
           View menu <ArrowDown aria-hidden="true" class="size-4 lg:hidden" />
         </a>
         <a href={cafe.mapsShortLink} class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-foam/50 px-3 py-3 font-bold hover:bg-foam/10 lg:px-6 lg:py-3.5">

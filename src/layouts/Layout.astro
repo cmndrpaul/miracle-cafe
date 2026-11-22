@@ -3,7 +3,14 @@ import '@fontsource-variable/fraunces';
 import '@fontsource-variable/plus-jakarta-sans';
 import '../styles/global.css';
 import { cafe } from '../data/cafe';
-const { title = `${cafe.name} | Menu, hours & directions` } = Astro.props;
+const { title = cafe.name, description = cafe.tagline } = Astro.props as {
+  title?: string;
+  description?: string;
+};
+const shareImagePath = '/miracles-cafe-og.png';
+const pageUrl = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
+const shareImage = Astro.site ? new URL(shareImagePath, Astro.site).href : shareImagePath;
+const shareImageAlt = `${cafe.name} logo and “${cafe.motto}” on a green background, with Naic, Cavite below.`;
 ---
 <!doctype html>
 <html lang="en">
@@ -11,9 +18,24 @@ const { title = `${cafe.name} | Menu, hours & directions` } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#1f3a2e" />
-    <meta name="description" content={cafe.tagline} />
+    <meta name="description" content={description} />
+    {pageUrl && <link rel="canonical" href={pageUrl} />}
+    {pageUrl && <meta property="og:url" content={pageUrl} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={cafe.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={shareImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={shareImage} />
+    <meta name="twitter:image:alt" content={shareImageAlt} />
     <title>{title}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon.png" />
+    <slot name="head" />
   </head>
   <body class="antialiased">
     <slot />

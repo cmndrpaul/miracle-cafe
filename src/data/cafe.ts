@@ -1,9 +1,14 @@
 // Single source of truth for cafe info. Search "TODO" for placeholders.
 export const cafe = {
   name: "Miracle's Cafe",
-  tagline: 'A cozy coffee shop in Naic, Cavite, with coffee, tea, desserts and quick bites.',
+  tagline: 'A cozy coffee shop in San Roque, Naic, Cavite, serving coffee, matcha, Filipino meals, and desserts.',
   motto: 'Warmth in every cup',
-  address: '9037 Sitio Maname, San Roque, Naic, Cavite',
+  address: {
+    streetAddress: '9037 Sitio Maname, San Roque',
+    addressLocality: 'Naic',
+    addressRegion: 'Cavite',
+    addressCountry: 'PH',
+  },
   plusCode: '8Q7F+2P Naic, Cavite',
   lat: 14.3126054,
   lng: 120.7742688,

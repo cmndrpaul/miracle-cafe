@@ -4,10 +4,27 @@ import Hero from '../components/Hero.astro';
 import Menu from '../components/Menu.astro';
 import Reviews from '../components/Reviews.astro';
 import Location from '../components/Location.astro';
+import { cafe } from '../data/cafe';
 import { getMenu } from '../data/menu';
 const items = await getMenu();
+const title = `${cafe.name} in Naic, Cavite | Menu & Hours`;
+const description = `Browse coffee, matcha, Filipino meals, and desserts at ${cafe.name} in San Roque, Naic, Cavite. See menu prices, opening hours, and directions.`;
+const pageUrl = Astro.site && new URL(Astro.url.pathname, Astro.site).href;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CafeOrCoffeeShop',
+  name: cafe.name,
+  description: cafe.tagline,
+  address: { '@type': 'PostalAddress', ...cafe.address },
+  geo: { '@type': 'GeoCoordinates', latitude: cafe.lat, longitude: cafe.lng },
+  hasMap: cafe.mapsShortLink,
+  url: pageUrl,
+  hasMenu: Astro.site && new URL('/menu', Astro.site).href,
+  logo: Astro.site && cafe.heroImage ? new URL(cafe.heroImage, Astro.site).href : undefined,
+};
 ---
-<Layout>
+<Layout {title} {description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
   <Hero />
   <main>
     <Menu items={items} />
@@ -15,3 +32,32 @@ const items = await getMenu();
   </main>
   <Location />
 </Layout>
+
+<script>
+  const sectionLinks = document.querySelectorAll<HTMLAnchorElement>('[data-section-link]');
+
+  function sectionFor(path: string) {
+    return document.getElementById(path.replace(/^\/|\/$/g, ''));
+  }
+
+  function scrollToCurrentSection() {
+    sectionFor(location.pathname)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }
+
+  for (const link of sectionLinks) {
+    link.addEventListener('click', (event) => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const section = sectionFor(link.pathname);
+      if (!section) return;
+
+      event.preventDefault();
+      if (location.pathname !== link.pathname || location.hash) {
+        history.pushState(null, '', link.pathname + location.search);
+      }
+      section.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  window.addEventListener('popstate', scrollToCurrentSection);
+  void document.fonts.ready.then(scrollToCurrentSection);
+</script>

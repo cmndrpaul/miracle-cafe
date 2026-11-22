@@ -2,6 +2,8 @@
 import { MapPin, Navigation, Clock } from '@lucide/astro';
 import { cafe } from '../data/cafe';
 const { lat, lng } = cafe;
+const { streetAddress, addressLocality, addressRegion } = cafe.address;
+const address = [streetAddress, addressLocality, addressRegion].join(', ');
 const social = Object.entries(cafe.social).filter(([, url]) => url);
 const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
 ---
@@ -9,7 +11,7 @@ const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
   <div class="mx-auto grid max-w-6xl gap-5 px-4 py-9 sm:px-8 md:grid-cols-2 md:py-12 lg:items-start lg:gap-x-14 lg:py-20">
     <div class="space-y-4 lg:col-start-2 lg:row-start-1 lg:flex lg:flex-col">
       <h2 class="font-display text-3xl font-bold sm:text-5xl">Visit the cafe</h2>
-      <p class="flex gap-2"><MapPin class="mt-0.5 size-5 shrink-0 text-butter" />{cafe.address}</p>
+      <p class="flex gap-2"><MapPin class="mt-0.5 size-5 shrink-0 text-butter" />{address}</p>
       <p class="text-sm text-foam/75">Plus Code {cafe.plusCode}</p>
       <p class="flex gap-2"><Clock class="mt-0.5 size-5 shrink-0 text-butter" />{cafe.hoursLabel}</p>
       <p class="text-sm text-foam/75">{cafe.visitorInfo.join(' · ')}</p>

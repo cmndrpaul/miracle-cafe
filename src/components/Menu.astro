@@ -127,6 +127,7 @@ function sharedOptions(rows: MenuItem[]) {
   const categories = [...document.querySelectorAll<HTMLAnchorElement>('[data-menu-category]')];
   const panels = [...document.querySelectorAll<HTMLElement>('[data-menu-panel]')];
   let active = links[0]?.hash;
+  let selectedCategory = '';
 
   function syncMenu() {
     for (const link of links) {
@@ -135,12 +136,13 @@ function sharedOptions(rows: MenuItem[]) {
     }
     for (const panel of panels) panel.hidden = `#${panel.id}` !== active;
     for (const category of categories) {
-      if (category.hash === location.hash) category.setAttribute('aria-current', 'location');
+      if (category.hash === selectedCategory) category.setAttribute('aria-current', 'location');
       else category.removeAttribute('aria-current');
     }
   }
 
   function syncHash() {
+    selectedCategory = location.hash;
     if (links.some((link) => link.hash === location.hash)) active = location.hash;
     else if (!location.hash) active = links[0]?.hash;
     else {
@@ -150,13 +152,21 @@ function sharedOptions(rows: MenuItem[]) {
     syncMenu();
   }
 
-  for (const link of links) {
+  for (const link of [...links, ...categories]) {
     link.addEventListener('click', (event) => {
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const isCategory = link.hasAttribute('data-menu-category');
+      const target = isCategory ? document.getElementById(link.hash.slice(1)) : menu;
+      if (!target) return;
       event.preventDefault();
-      if (location.hash !== link.hash) history.pushState(null, '', link.hash);
-      syncHash();
-      requestAnimationFrame(() => menu?.scrollIntoView({ block: 'start', behavior: 'instant' }));
+      if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+      if (isCategory) selectedCategory = link.hash;
+      else {
+        active = link.hash;
+        selectedCategory = '';
+      }
+      syncMenu();
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
     });
   }
   window.addEventListener('hashchange', syncHash);
