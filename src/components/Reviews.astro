@@ -51,15 +51,16 @@ import { cafe, reviews } from '../data/cafe';
   }
 
   function syncDesktop(animate = false) {
+    const left = desktop.matches && start > 0 ? cards[start].offsetLeft - cards[0].offsetLeft : 0;
     previous.disabled = start === 0;
     next.disabled = start === lastStart;
     cards.forEach((card, index) => {
       if (desktop.matches && (index < start || index >= start + batchSize)) card.setAttribute('aria-hidden', 'true');
       else card.removeAttribute('aria-hidden');
     });
-    if (!desktop.matches || !cards.length) return;
+    if (!desktop.matches || (start === 0 && !animate)) return;
     list.scrollTo({
-      left: cards[start].offsetLeft - cards[0].offsetLeft,
+      left,
       behavior: animate && !reducedMotion.matches ? 'smooth' : 'instant',
     });
   }

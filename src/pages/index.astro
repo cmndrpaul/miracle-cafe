@@ -24,6 +24,8 @@ const structuredData = {
 };
 ---
 <Layout {title} {description}>
+  {cafe.heroProductSrcset && <link slot="head" rel="preload" as="image" media="(min-width: 64rem)"
+    imagesrcset={cafe.heroProductSrcset} imagesizes="264px" fetchpriority="high" />}
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
   <Hero />
   <main>

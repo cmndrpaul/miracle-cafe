@@ -2,6 +2,7 @@
 import { ArrowDown, ArrowUpRight, Coffee } from '@lucide/astro';
 import { cafe } from '../data/cafe';
 import StatusBadge from './StatusBadge.astro';
+const transparentPixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 const navigation = [
   { href: '/reviews', label: 'Reviews' },
   { href: '/visit', label: 'Visit' },
@@ -10,10 +11,11 @@ const navigation = [
 <header class="hero-surface relative bg-forest text-foam">
   <nav aria-label="Main navigation" class="relative z-30 mx-auto flex max-w-6xl items-center justify-between gap-x-3 border-b border-foam/20 px-4 py-2 sm:px-8 lg:border-0 lg:py-5 lg:pr-72">
     <a href="/" class="inline-flex min-h-11 items-center gap-2.5 font-display text-lg font-bold lg:text-xl">
-      {cafe.heroWordmark ? (
-        <span class="grid size-12 place-items-center rounded-full bg-foam p-1.5 lg:hidden">
-          <img src={cafe.heroWordmark} width="320" height="268" alt="" />
-        </span>
+      {cafe.heroWordmarkSrcset ? (
+        <picture class="grid size-12 place-items-center rounded-full bg-foam p-1.5 lg:hidden">
+          <source media="(width < 64rem)" srcset={cafe.heroWordmarkSrcset} sizes="36px" />
+          <img src={transparentPixel} width="120" height="101" alt="" />
+        </picture>
       ) : <Coffee aria-hidden="true" class="size-5 text-butter lg:hidden" />}
       {cafe.name}
     </a>
@@ -39,21 +41,17 @@ const navigation = [
       </div>
     </div>
 
-    {cafe.heroProductImage && (
+    {cafe.heroProductSrcset && (
       <div class="relative isolate mx-auto hidden aspect-square w-full max-w-md place-items-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:grid">
         <div aria-hidden="true" class="absolute inset-[10%] translate-x-3 -translate-y-2 rounded-full border border-butter/35"></div>
         <div aria-hidden="true" class="hero-cup-backdrop absolute inset-[12%] rounded-full"></div>
         <div class="relative aspect-[3/4] w-[59%] rotate-6 drop-shadow-xl">
           <picture>
-            <source media="(min-width: 64rem)" srcset={`${cafe.heroProductImage} 280w, ${cafe.heroProductImage2x} 560w`} sizes="264px" />
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+            <source media="(min-width: 64rem)" srcset={cafe.heroProductSrcset} sizes="264px" />
+            <img src={transparentPixel}
               alt={`Illustration of a ${cafe.name} takeaway coffee cup`} width="280" height="374" fetchpriority="high"
               class="block h-full w-full object-contain" />
           </picture>
-          {cafe.heroWordmark && (
-            <span aria-hidden="true" class="cup-wordmark absolute left-1/2 top-[56%] aspect-[900/755] w-[61%] -translate-x-1/2 -translate-y-1/2 bg-foam"
-              style={{ '--cup-wordmark': `url("${cafe.heroWordmark}")` }}></span>
-          )}
         </div>
       </div>
     )}
@@ -66,10 +64,6 @@ const navigation = [
 <style>
   .hero-cup-backdrop {
     background: radial-gradient(circle at 40% 30%, var(--color-sage), var(--color-butter));
-  }
-
-  .cup-wordmark {
-    mask: var(--cup-wordmark) center / contain no-repeat;
   }
 </style>
 

@@ -14,9 +14,8 @@ export const cafe = {
   lng: 120.7742688,
   mapsShortLink: 'https://maps.app.goo.gl/9xbCY8yx5Wrj4aWo6',
   heroImage: '/miracles-cafe-wordmark.webp',
-  heroWordmark: '/miracles-cafe-wordmark-320.webp',
-  heroProductImage: '/miracles-cafe-cup-280.webp',
-  heroProductImage2x: '/miracles-cafe-cup-560.webp',
+  heroWordmarkSrcset: '/miracles-cafe-wordmark-40.webp 40w, /miracles-cafe-wordmark-80.webp 80w, /miracles-cafe-wordmark-120.webp 120w',
+  heroProductSrcset: '/miracles-cafe-branded-cup-280.webp 280w, /miracles-cafe-branded-cup-560.webp 560w',
   orderingNote: 'Please order and pay at the counter.',
   services: ['Coffee cart', 'Events venue', 'Catering', 'Food packages'],
   amenities: [
