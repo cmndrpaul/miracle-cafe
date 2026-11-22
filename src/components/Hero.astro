@@ -39,10 +39,18 @@ const navigation = [
       </div>
     </div>
 
-    {cafe.heroImage && (
-      <div class="mx-auto hidden aspect-square w-full max-w-md place-items-center rounded-full bg-foam p-[2.75rem] shadow-lg shadow-bean/20 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:grid">
-        <img src={cafe.heroImage} alt={`${cafe.name} logo`} width="900" height="755" fetchpriority="high"
-          class="h-auto w-full" />
+    {cafe.heroProductImage && (
+      <div class="relative isolate mx-auto hidden aspect-square w-full max-w-md place-items-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:grid">
+        <div aria-hidden="true" class="absolute inset-[10%] translate-x-3 -translate-y-2 rounded-full border border-butter/35"></div>
+        <div aria-hidden="true" class="hero-cup-backdrop absolute inset-[12%] rounded-full"></div>
+        <div class="relative w-[59%] rotate-6 drop-shadow-xl">
+          <img src={cafe.heroProductImage} alt={`Illustration of a ${cafe.name} takeaway coffee cup`} width="720" height="960" fetchpriority="high"
+            class="h-auto w-full" />
+          {cafe.heroImage && (
+            <span aria-hidden="true" class="cup-wordmark absolute left-1/2 top-[56%] aspect-[900/755] w-[61%] -translate-x-1/2 -translate-y-1/2 bg-foam"
+              style={{ '--cup-wordmark': `url("${cafe.heroImage}")` }}></span>
+          )}
+        </div>
       </div>
     )}
     <ul class="flex flex-wrap gap-x-4 gap-y-1 border-t border-foam/20 py-3 text-xs font-medium text-foam/85 lg:self-start lg:gap-x-5 lg:pt-4 lg:text-sm">
@@ -50,4 +58,14 @@ const navigation = [
     </ul>
   </div>
 </header>
+
+<style>
+  .hero-cup-backdrop {
+    background: radial-gradient(circle at 40% 30%, var(--color-sage), var(--color-butter));
+  }
+
+  .cup-wordmark {
+    mask: var(--cup-wordmark) center / contain no-repeat;
+  }
+</style>
 
