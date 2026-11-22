@@ -1,0 +1,21 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/plus-jakarta-sans';
+import '../styles/global.css';
+import { cafe } from '../data/cafe';
+const { title = `${cafe.name} | Menu, hours & directions` } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1f3a2e" />
+    <meta name="description" content={cafe.tagline} />
+    <title>{title}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
+  </head>
+  <body class="antialiased">
+    <slot />
+  </body>
+</html>

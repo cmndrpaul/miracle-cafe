@@ -1,0 +1,55 @@
+---
+import { cafe } from '../data/cafe';
+---
+<span
+  data-status
+  data-hours={JSON.stringify(cafe.hours)}
+  class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-sm font-medium text-foam"
+>
+  <span data-dot class="size-2.5 rounded-full bg-foam/50"></span>
+  <span data-text>Checking hours…</span>
+</span>
+
+<script>
+  const el = document.querySelector<HTMLElement>('[data-status]')!;
+  const dot = el.querySelector<HTMLElement>('[data-dot]')!;
+  const text = el.querySelector<HTMLElement>('[data-text]')!;
+  const hours: ([string, string] | null)[] = JSON.parse(el.dataset.hours!);
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const BASE = 'inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ';
+  const mins = (s: string) => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+  const fmt = (s: string) => {
+    const [h, m] = s.split(':').map(Number);
+    return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+  };
+
+  // Always evaluated in Asia/Manila, regardless of the visitor's device timezone.
+  function manilaNow() {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Manila', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const get = (t: string) => parts.find((p) => p.type === t)!.value;
+    return { day: DAYS.indexOf(get('weekday')), minutes: Number(get('hour')) * 60 + Number(get('minute')) };
+  }
+
+  function update() {
+    const { day, minutes } = manilaNow();
+    const today = hours[day];
+    const yest = hours[(day + 6) % 7];
+    let closesAt: string | null = null;
+
+    if (today) {
+      const o = mins(today[0]), c = mins(today[1]);
+      if (c > o ? minutes >= o && minutes < c : minutes >= o) closesAt = today[1];
+    }
+    // Yesterday's overnight shift still running past midnight
+    if (!closesAt && yest && mins(yest[1]) <= mins(yest[0]) && minutes < mins(yest[1])) closesAt = yest[1];
+
+    const open = closesAt !== null;
+    text.textContent = open ? `Open now · until ${fmt(closesAt!)}` : 'Closed';
+    dot.className = `size-2.5 rounded-full ${open ? 'bg-emerald-400' : 'bg-red-400'}`;
+    el.className = BASE + (open ? 'bg-emerald-500/25 text-emerald-100' : 'bg-red-500/25 text-red-100');
+  }
+  update();
+  setInterval(update, 60_000);
+</script>

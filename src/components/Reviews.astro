@@ -1,0 +1,90 @@
+---
+import { ChevronLeft, ChevronRight, Star } from '@lucide/astro';
+import { cafe, reviews } from '../data/cafe';
+---
+<section id="reviews" class="bg-sage/60 lg:bg-sage">
+  <div class="mx-auto max-w-6xl px-4 py-9 sm:px-8 lg:py-20">
+    <div class="lg:flex lg:items-baseline lg:justify-between lg:gap-6">
+      <h2 class="font-display text-3xl font-semibold text-forest sm:text-4xl lg:text-5xl">What guests say</h2>
+      <p class="mt-2 text-sm text-forest lg:text-base lg:text-cocoa">{cafe.googleRating.score} out of 5 on Google · {cafe.googleRating.count} reviews</p>
+    </div>
+    <div class="relative mt-4 lg:mt-9">
+    <ul id="review-cards" class="grid gap-3 lg:grid-flow-col lg:auto-cols-[calc((100%-2.5rem)/3)] lg:gap-5 lg:overflow-hidden">
+      {reviews.map((r) => (
+        <li tabindex="-1" class="min-w-0 rounded-xl bg-foam p-4 lg:rounded-2xl lg:p-6">
+          <div class="flex gap-0.5" role="img" aria-label="5 out of 5 stars">
+            {Array.from({ length: 5 }).map(() => <Star class="size-4 fill-butter text-butter" />)}
+          </div>
+          <p class="mt-3 text-[15px] leading-relaxed">{r.text}</p>
+          <p class="mt-4 text-sm font-semibold text-forest">{r.name}</p>
+        </li>
+      ))}
+    </ul>
+    <div data-review-arrows hidden class="mt-4 gap-2 max-lg:hidden lg:flex lg:justify-end xl:pointer-events-none xl:absolute xl:inset-y-0 xl:-inset-x-14 xl:mt-0 xl:items-center xl:justify-between">
+      <button type="button" data-review-previous aria-label="Previous review" aria-controls="review-cards" class="grid size-11 place-items-center rounded-full bg-forest text-foam enabled:hover:bg-forest/85 enabled:hover:shadow-sm disabled:opacity-40 xl:pointer-events-auto"><ChevronLeft aria-hidden="true" /></button>
+      <button type="button" data-review-next aria-label="Next review" aria-controls="review-cards" class="grid size-11 place-items-center rounded-full bg-forest text-foam enabled:hover:bg-forest/85 enabled:hover:shadow-sm disabled:opacity-40 xl:pointer-events-auto"><ChevronRight aria-hidden="true" /></button>
+    </div>
+    </div>
+    <button type="button" data-review-more aria-controls="review-cards" hidden
+      class="mt-5 min-h-11 w-full rounded-xl border border-forest bg-transparent px-5 py-3 font-semibold text-forest hover:bg-forest/10 sm:w-auto lg:hidden">Show More</button>
+    <p data-review-status class="sr-only" aria-live="polite"></p>
+  </div>
+</section>
+
+<script>
+  const list = document.querySelector<HTMLUListElement>('#review-cards')!;
+  const cards = [...list.querySelectorAll('li')];
+  const more = document.querySelector<HTMLButtonElement>('[data-review-more]')!;
+  const previous = document.querySelector<HTMLButtonElement>('[data-review-previous]')!;
+  const next = document.querySelector<HTMLButtonElement>('[data-review-next]')!;
+  const status = document.querySelector<HTMLElement>('[data-review-status]')!;
+  const desktop = window.matchMedia('(min-width: 64rem)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const batchSize = 3;
+  const lastStart = Math.max(0, cards.length - batchSize);
+  let shown = batchSize;
+  let start = 0;
+
+  function syncMobile() {
+    cards.forEach((card, index) => card.classList.toggle('max-lg:hidden', index >= shown));
+    more.hidden = shown >= cards.length;
+  }
+
+  function syncDesktop(animate = false) {
+    previous.disabled = start === 0;
+    next.disabled = start === lastStart;
+    cards.forEach((card, index) => {
+      if (desktop.matches && (index < start || index >= start + batchSize)) card.setAttribute('aria-hidden', 'true');
+      else card.removeAttribute('aria-hidden');
+    });
+    if (!desktop.matches || !cards.length) return;
+    list.scrollTo({
+      left: cards[start].offsetLeft - cards[0].offsetLeft,
+      behavior: animate && !reducedMotion.matches ? 'smooth' : 'instant',
+    });
+  }
+
+  more.addEventListener('click', () => {
+    const firstNew = shown;
+    shown = Math.min(shown + batchSize, cards.length);
+    syncMobile();
+    cards.slice(firstNew, shown).forEach((card) => card.classList.add('review-reveal'));
+    cards[firstNew]?.focus({ preventScroll: true });
+    cards[firstNew]?.scrollIntoView({ block: 'nearest', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    status.textContent = `Showing ${shown} of ${cards.length} reviews.`;
+  });
+
+  function move(direction: number) {
+    start = Math.min(lastStart, Math.max(0, start + direction));
+    syncDesktop(true);
+    status.textContent = `Showing reviews ${start + 1} to ${Math.min(start + batchSize, cards.length)} of ${cards.length}.`;
+  }
+
+  previous.addEventListener('click', () => move(-1));
+  next.addEventListener('click', () => move(1));
+  desktop.addEventListener('change', () => syncDesktop());
+  new ResizeObserver(() => syncDesktop()).observe(list);
+  document.querySelector<HTMLElement>('[data-review-arrows]')!.hidden = !lastStart;
+  syncMobile();
+  syncDesktop();
+</script>
