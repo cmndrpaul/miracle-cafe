@@ -47,8 +47,8 @@ const navigation = [
         <div aria-hidden="true" class="hero-cup-backdrop absolute inset-[12%] rounded-full"></div>
         <div class="relative aspect-[3/4] w-[59%] rotate-6 drop-shadow-xl">
           <picture>
-            <source media="(min-width: 64rem)" srcset={cafe.heroProductSrcset} sizes="264px" />
-            <img src={transparentPixel}
+            <source media="(width < 64rem)" srcset={transparentPixel} />
+            <img src={cafe.heroProductImage} srcset={cafe.heroProductSrcset} sizes="264px"
               alt={`Illustration of a ${cafe.name} takeaway coffee cup`} width="280" height="374" fetchpriority="high"
               class="block h-full w-full object-contain" />
           </picture>
